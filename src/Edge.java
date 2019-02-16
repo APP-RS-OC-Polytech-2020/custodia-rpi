@@ -1,3 +1,5 @@
+package Robot;
+
 public class Edge {
 	private int distance;
 	private Vertex vertA;

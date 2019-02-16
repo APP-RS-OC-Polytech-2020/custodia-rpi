@@ -1,3 +1,5 @@
+package Robot;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,7 +18,7 @@ public class SocketRobotino implements Runnable {
 	//String ipServer="192.168.56.1";//iplocal
 	String ipServer="193.48.125.70";
 	Robot robot;
-	public SocketRobotino(String ipServer,int  port,Robot robot, String ipRobot){
+	public SocketRobotino(String ipServer,int  port,Robot robot){
 		this.robot=robot;
 		this.port=port;
 		this.ipServer=ipServer;
@@ -27,7 +29,7 @@ public class SocketRobotino implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		out.println("{\"type\":\"init\",\"infoInit\":\"Client-->Server  demande de connexion\", \"clientName\": \""+""+"\", \"clientType\":\"Robotino\", \"ipRobot\":\""+ipRobot+"\"}");//ajouter le nom du robot
+		out.println("{\"type\":\"init\",\"infoInit\":\"Client-->Server  demande de connexion\", \"clientName\": \""+""+"\", \"clientType\":\"Robotino\"}");//ajouter le nom du robot
 		out.println("{\"type\":\"message\",\"message\":\"testRobotino\"}");
 		
 	}
@@ -59,7 +61,7 @@ public class SocketRobotino implements Runnable {
 			}else if(type.equals("message")){
 				String message = JSON.getString("message");
 				System.out.println("CoRobo\tMessage: "+message);
-				//exmple pour le décodage de JSON
+				//exmple pour le dÃ©codage de JSON
 				//String dName = JSON.getJSONObject("infoCommande").getJSONObject("destinataire").getString("name");
 			}else if(type.equals("commande")){
 				this.robot.dataProcessing(JSON);				

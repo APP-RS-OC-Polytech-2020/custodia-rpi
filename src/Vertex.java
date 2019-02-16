@@ -1,3 +1,5 @@
+package Robot;
+
 public class Vertex {
 	private String name;
 	private int id;
