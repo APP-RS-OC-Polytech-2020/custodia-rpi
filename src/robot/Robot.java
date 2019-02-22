@@ -27,7 +27,6 @@ public class Robot implements Runnable
     protected final Motor motor3;
     protected final OmniDrive omniDrive;
     protected final Bumper bumper;
-    private RobotinoTopUn robotino;
     public boolean RobotIsOk = false;
     
     protected final float[] startVector = new float[]
@@ -45,7 +44,6 @@ public class Robot implements Runnable
         motor3 = new Motor();
         omniDrive = new OmniDrive();
         bumper = new Bumper();
-        this.robotino= new RobotinoTopUn();
         this.isManual=true;
     }
 
@@ -158,7 +156,7 @@ public class Robot implements Runnable
         }
     }  
     //QRCode
-    public void recalibrage(float valueX, float distance) throws InterruptedException{
+    public int recalibrage(float valueX, float distance) throws InterruptedException{
 		if(valueX < 180){
 			//TODO a tester c'est de la deums
 			drive(10,0,-10,5);
@@ -167,7 +165,9 @@ public class Robot implements Runnable
 			drive(10,0,10,5);
 		}else if(distance <30){
 			this.RobotIsOk = true;
+			return 1;
 		}
+		return 0;
 	}
 
     public void dataProcessing(JSONObject JSON){

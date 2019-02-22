@@ -19,11 +19,10 @@ public class Main
     		
     		new Thread(r).start();
     		r.start();
-    		//A voir si on laisse
-    		GestionCamera gc = new GestionCamera(r);
-    		new Thread(gc).start();
+    		//A voir si on laisse		
     		
-    		
+    		RobotinoTopUn robotTopUn = new RobotinoTopUn(r);
+    		new Thread(robotTopUn).start();
     	}
     }	
 }

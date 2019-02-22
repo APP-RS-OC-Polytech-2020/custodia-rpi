@@ -29,7 +29,10 @@ public class GestionCamera implements Runnable{
 	Robot robot;
 	private CameraGrabber cam;
 	private boolean camIsRunning;
-	public boolean robotIsOk= false;	
+	public boolean findQRCode = false;
+	private Mat matImg;
+	private Mat grayFrame;
+	public String zone;
 	
 	public GestionCamera(Robot robot){
 		System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
@@ -47,11 +50,9 @@ public class GestionCamera implements Runnable{
 		this.camIsRunning=true;
 		//int absoluteBodySize = 0;
 		//Object bodyCascade;
-		Mat matImg;
 		while (true) {
-			matImg = cam.Capture();
+			this.matImg = cam.Capture();
 			//MatOfRect bodies = new MatOfRect();
-			Mat grayFrame = new Mat();
 			
 			// convert the frame in gray scale
 			Imgproc.cvtColor(matImg, grayFrame, Imgproc.COLOR_BGR2GRAY);
@@ -80,8 +81,8 @@ public class GestionCamera implements Runnable{
 			//possibility to detect other parts of the body : upperbody, lowerbody, face
 			*/
 			
-			BufferedImage bufImg = new BufferedImage(matImg.cols(), matImg.rows(), BufferedImage.TYPE_3BYTE_BGR);
-			matImg.get(0, 0, ((DataBufferByte)bufImg.getRaster().getDataBuffer()).getData());
+			BufferedImage bufImg = new BufferedImage(this.matImg.cols(), this.matImg.rows(), BufferedImage.TYPE_3BYTE_BGR);
+			this.matImg.get(0, 0, ((DataBufferByte)bufImg.getRaster().getDataBuffer()).getData());
 			
 			BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(new BufferedImageLuminanceSource(bufImg)));
 			
@@ -104,11 +105,15 @@ public class GestionCamera implements Runnable{
 					matImg.get(0, 0, ((DataBufferByte)bufImg.getRaster().getDataBuffer()).getData());
 				}*/
 				float hauteurQrCode = points[0].getY() - points[1].getY();
-				//12 = taille en cm du qrCode, 480 resolution en pixel pour l'hauteur de l'image de la caméra
+				//12 = taille en cm du qrCode, 480 resolution en pixel pour l'hauteur de l'image de la camÃ©ra
 				float distanceRob = 12* 480/hauteurQrCode;
-				robot.recalibrage(points[0].getX(),distanceRob);
-				System.out.println("Le robot est a� " + distanceRob + " cm du QRCode");
+				this.findQRCode=true;
+				int valuereturn =robot.recalibrage(points[0].getX(),distanceRob);
+				
+				System.out.println("Le robot est a  " + distanceRob + " cm du QRCode");
 				System.out.println(qrCodeResult.getText());
+				this.zone = qrCodeResult.getText();
+				Thread.sleep(100);
 				
 			} catch (NotFoundException e1) {
 				//e1.printStackTrace();

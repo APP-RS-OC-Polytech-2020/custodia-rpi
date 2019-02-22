@@ -24,8 +24,4 @@ public class Vertex {
 		return "Vertex [name=" + name + ", id=" + id + "]";
 	}
 	
-	
-	
-	
 }
-
