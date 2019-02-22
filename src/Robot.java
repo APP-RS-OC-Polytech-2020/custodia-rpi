@@ -221,10 +221,10 @@ public class Robot implements Runnable
 		v.add(new Vertex("SortieSalleDroite",5));
 
 		ArrayList<Edge> e=new ArrayList<Edge>();
-		e.add(new Edge(7,v.get(0),v.get(1)));
-		e.add(new Edge(9,v.get(1),v.get(2)));
-		e.add(new Edge(14,v.get(2),v.get(3)));
-		e.add(new Edge(10,v.get(2),v.get(4)));
+		e.add(new Edge(7,v.get(0),v.get(1),180,180));
+		e.add(new Edge(9,v.get(1),v.get(2),180,90));
+		e.add(new Edge(14,v.get(2),v.get(3),180,-90));
+		e.add(new Edge(10,v.get(2),v.get(4),180,90));
 
 		ShortestPath sp=new ShortestPath(new Map(v,e),v.get(0));
 		sp.getAllPaths();
