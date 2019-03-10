@@ -22,22 +22,24 @@ import com.google.zxing.Result;
 import com.google.zxing.ResultPoint;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
-
-import robot.Robot;
+import echange.Robot;
+import echange.SocketRaspberry;
 
 public class GestionCamera implements Runnable{
-	Robot robot;
 	private CameraGrabber cam;
 	private boolean camIsRunning;
 	public boolean findQRCode = false;
 	private Mat matImg;
 	private Mat grayFrame;
 	public String zone;
+	Robot robot;
+	private SocketRaspberry sr;
 	
-	public GestionCamera(Robot robot){
+	public GestionCamera(Robot robot,SocketRaspberry sr){	
 		System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
 		System.out.println("Open CV Processor Loaded");
 		this.robot=robot;
+		this.sr= sr;
 	}
 	
 	public int imageProcessing() throws InterruptedException{
@@ -108,9 +110,9 @@ public class GestionCamera implements Runnable{
 				//12 = taille en cm du qrCode, 480 resolution en pixel pour l'hauteur de l'image de la camÃ©ra
 				float distanceRob = 12* 480/hauteurQrCode;
 				this.findQRCode=true;
-				int valuereturn =robot.recalibrage(points[0].getX(),distanceRob);
+				int valuereturn =recalibrage(points[0].getX(),distanceRob);
 				
-				System.out.println("Le robot est a  " + distanceRob + " cm du QRCode");
+				System.out.println("Le robot est à  " + distanceRob + " cm du QRCode");
 				System.out.println(qrCodeResult.getText());
 				this.zone = qrCodeResult.getText();
 				Thread.sleep(100);
@@ -140,5 +142,18 @@ public class GestionCamera implements Runnable{
 	
 	public void start(){
 		System.out.println("Initialisation camera");
+	}
+	
+    //QRCode
+    public int recalibrage(float valueX, float distance) throws InterruptedException{
+		if(valueX < 180){
+			this.sr.EnvoiDriveRobot(10,-5,5);
+		}else if(valueX > 370){
+			this.sr.EnvoiDriveRobot(10,5,5);
+		}else if(distance <30){
+			this.robot.RobotIsOk = true;
+			return 1;
+		}
+		return 0;
 	}
 }
