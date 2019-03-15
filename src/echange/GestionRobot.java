@@ -1,5 +1,8 @@
 package echange;
 import java.util.ArrayList;
+
+import org.json.JSONException;
+
 import deplacement.Edge;
 import deplacement.Vertex;
 import deplacement.ShortestPath;
@@ -49,7 +52,7 @@ public class GestionRobot implements Runnable{
 		regularPath.add(v.get(1));
 		
 		this.robot = r;
-		this.vCurrent = pathCycle();
+		
 	}
 	
 	
@@ -59,7 +62,8 @@ public class GestionRobot implements Runnable{
 		sp.getPath(vDestination);
 	}
 	
-	public void modeAuto() throws InterruptedException {
+	public void modeAuto() throws InterruptedException, JSONException {
+		this.vCurrent = pathCycle();
 		while(this.robot.RobotIsOk ||this.gestionCamera.findQRCode){
 			Thread.sleep(500);
 		}
@@ -110,6 +114,9 @@ public class GestionRobot implements Runnable{
     		try {
 				modeAuto();
 			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
     	}

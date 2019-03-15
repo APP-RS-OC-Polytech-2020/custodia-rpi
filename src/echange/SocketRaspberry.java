@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 
@@ -18,7 +19,9 @@ public class SocketRaspberry implements Runnable {
 	//String ipServer="192.168.56.1";//iplocal
 	String ipServer="193.48.125.70";
 	Robot robot;
+	private JsonManager jsonManager;
 	public SocketRaspberry(String ipServer,int  port,Robot robot){
+		jsonManager = new JsonManager(new JSONObject());
 		this.robot=robot;
 		this.port=port;
 		this.ipServer=ipServer;
@@ -29,12 +32,13 @@ public class SocketRaspberry implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		out.println("{\"type\":\"init\",\"infoInit\":\"Client-->Server  demande de connexion\", \"clientName\": \""+""+"\", \"clientType\":\"ArduinoRobotino\"}");//ajouter le nom du robot
+		
+		out.println("{\"type\":\"init\",\"infoInit\":\"Client-->Server  demande de connexion\", \"clientName\": \""+""+"\", \"clientType\":\"ArduinoRobotino\",\"ipRobot\":\""+this.robot.hostname+"\"}");//ajouter le nom du robot
 		out.println("{\"type\":\"message\",\"message\":\"testRobotino\"}");
 		
 	}
-	public void envoyerMessage(String m){
-		out.println(m);
+	public void envoyerMessage(JSONObject jsonObj){
+		out.println(jsonObj);
 	}
 	public void run() {
 		String inLine="";
@@ -49,12 +53,17 @@ public class SocketRaspberry implements Runnable {
 		}
 	}
 	
-	public void EnvoiDriveRobot(float x, float y,float force){
-		
+	public void EnvoiDriveRobot(float x, float y,float force) throws JSONException{
+		JSONObject jsonObj = jsonManager.driveRobot(x,y,force,this.robot.hostname);
+		System.out.println(jsonObj);
+		envoyerMessage(jsonObj);
 		//A completer avec la transfo en json et l'envoi
 	}
 	
-	public void EnvoiRotateRobot(float rotation){
+	public void EnvoiRotateRobot(float rotation) throws JSONException{
+		JSONObject jsonObj = jsonManager.rotateRobot(rotation, this.robot.hostname);
+		System.out.println(jsonObj);
+		envoyerMessage(jsonObj);
 		//A completer avec la transfo en json et l'envoi
 		
 	}
@@ -75,7 +84,7 @@ public class SocketRaspberry implements Runnable {
 				//exmple pour le décodage de JSON
 				//String dName = JSON.getJSONObject("infoCommande").getJSONObject("destinataire").getString("name");
 			}else if(type.equals("auto")){
-				String auto = JSON.getString("auto");
+				String auto = JSON.getString("manualMode");
 				if(auto =="false") {
 					robot.setManual(false);
 				}else if(auto == "true"){
