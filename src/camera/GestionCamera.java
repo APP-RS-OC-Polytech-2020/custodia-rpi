@@ -156,6 +156,7 @@ public class GestionCamera implements Runnable{
 		}else if(distance <30){
 			this.sr.EnvoiDriveRobot(0,0,0);
 			this.robot.RobotIsOk = true;
+			System.out.println("recalibrage ok ");
 		}
 	}
 }

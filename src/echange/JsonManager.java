@@ -12,7 +12,7 @@ public class JsonManager {
 	public JSONObject rotateRobot(float rotation, String hostname) throws JSONException{
 		obj.put("manualMode",false);
 		obj.put("type","command");
-		obj.put("mode",rotation);
+		obj.put("mode","rotation");
 		obj.put("info","rzerze");
 		
 		JSONObject rotate = new JSONObject();
