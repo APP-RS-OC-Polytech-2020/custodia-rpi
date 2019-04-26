@@ -4,13 +4,13 @@ public class Edge {
 	private int distance;
 	private Vertex vertA;
 	private Vertex vertB;
-	private int actionToA;
-	private int actionToB;
-	public Edge(int d, Vertex va, Vertex vb, int aa, int ab){
+	private float actionToA;
+	private float actionToB;
+	public Edge(int d, Vertex va, Vertex vb, float e, float ab){
 		this.distance=d;
 		this.vertA=va;
 		this.vertB=vb;
-		this.actionToA=aa;
+		this.actionToA=e;
 		this.actionToB=ab;
 	}
 	public int getDistance() {
@@ -31,13 +31,13 @@ public class Edge {
 	public void setVertB(Vertex vertB) {
 		this.vertB = vertB;
 	}
-	public int getActionToA() {
+	public float getActionToA() {
 		return actionToA;
 	}
 	public void setActionToA(int actionToA) {
 		this.actionToA = actionToA;
 	}
-	public int getActionToB() {
+	public float getActionToB() {
 		return actionToB;
 	}
 	public void setActionToB(int actionToB) {

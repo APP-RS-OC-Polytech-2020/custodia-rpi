@@ -20,6 +20,7 @@ public class GestionRobot implements Runnable{
 	private Robot robot;
 	private GestionCamera gestionCamera;
 	private SocketRaspberry sr;
+	private int currentPathId;
 	
 	public GestionRobot(Robot r, SocketRaspberry sr){
 		this.vCurrent = new Vertex("SalleAPP1",1);
@@ -35,11 +36,12 @@ public class GestionRobot implements Runnable{
 		v.add(new Vertex("SortieSalleDroite",5));
 
 		this.e=new ArrayList<Edge>();
-		e.add(new Edge(7,v.get(0),v.get(1),180,180));
+		e.add(new Edge(7,v.get(0),v.get(1),(float) 4.5,10));//4.5 pour 180* de rotation
 		e.add(new Edge(9,v.get(1),v.get(2),180,90));
 		e.add(new Edge(14,v.get(2),v.get(3),180,-90));
 		e.add(new Edge(10,v.get(2),v.get(4),180,90));
 		
+		this.currentPathId=0;
 		
 		this.regularPath=new ArrayList<Vertex>();
 		regularPath.add(v.get(0));
@@ -66,35 +68,40 @@ public class GestionRobot implements Runnable{
 			Thread.sleep(500);
 		}
 		while(this.robot.RobotIsOk==false || this.gestionCamera.findQRCode== false) {
-				this.sr.EnvoiDriveRobot(40,0,8);
-				Thread.sleep(8000);
-				this.sr.EnvoiDriveRobot(0,0,0);
-				checkAround();
+				//this.sr.EnvoiDriveRobot(40,0,7);
+				//Thread.sleep(25000);
+				//this.sr.EnvoiDriveRobot(0,0,0);
+				//checkAround();
 		}
 		this.vPast = this.vCurrent;
 		this.vCurrent = pathCycle();
 		Edge currentEdge = getCurrentEdge(this.vPast,this.vCurrent);
 		System.out.println("currentedge"+currentEdge);
 		if(currentEdge!=null){
-			int angle;
+			float angle;
 			if(this.vPast.equals(currentEdge.getVertA())){
 				angle = currentEdge.getActionToB();
 			}else{
 				angle = currentEdge.getActionToA();
 			}
+			this.robot.demiTourOk=true;
 			System.out.println(angle);
 			this.sr.EnvoiRotateRobot(angle);
+			Thread.sleep(12000);
+			this.sr.EnvoiDriveRobot(0,0,0);
+			this.robot.demiTourOk=false;
 		}	
+		
 	}
 	
 	public void checkAround() throws JSONException, InterruptedException{
 		if(!this.robot.RobotIsOk ||!this.gestionCamera.findQRCode){
 			int i = 0;
-			while(i!=8 && this.gestionCamera.findQRCode == false){
-				this.sr.EnvoiRotateRobot(10);
-				Thread.sleep(100);
+			while(i!=12 && this.gestionCamera.findQRCode == false){
+				this.sr.EnvoiRotateRobot((float) 4.5);
+				Thread.sleep(1000);
 				this.sr.EnvoiRotateRobot(0);
-				Thread.sleep(3000);
+				Thread.sleep(2000);
 				i=i+1;	
 			}
 			this.sr.EnvoiRotateRobot(0);
@@ -114,19 +121,15 @@ public class GestionRobot implements Runnable{
 		return null;//degeulasse
 	}
 	
-    public Vertex pathCycle(){
-    	for(Vertex v:this.regularPath){
-    		if(v.getId()==this.vCurrent.getId()){
-    			if(regularPath.indexOf(v)==regularPath.size()-1){
-    				return regularPath.get(0);
-    			}else{
-    				System.out.println((regularPath.indexOf(v))+1);
-    				System.out.println("item"+regularPath.get((regularPath.indexOf(v))+1));
-    				return regularPath.get(regularPath.indexOf(v)+1);
-    			}
-    		}
-    	}
-		return this.vCurrent;
+    public Vertex pathCycle(){		
+		if(this.currentPathId==(regularPath.size()-1)){ 
+			this.currentPathId=0;
+			return regularPath.get(0);
+		}
+		else{
+			this.currentPathId++;
+			return regularPath.get(currentPathId);
+		}
     }
     
     public void run() {

@@ -5,6 +5,7 @@ public class Robot
     protected final String hostname;
     public boolean RobotIsOk = false;//une fois recalibre
     protected boolean isManual;
+    public boolean demiTourOk = false;
 
     public Robot(String hostname){
         this.hostname = hostname;
@@ -26,6 +27,16 @@ public class Robot
 	public void setManual(boolean isManual) {
 		this.isManual = isManual;
 	}
+
+	public boolean isDemiTourOk() {
+		return demiTourOk;
+	}
+
+	public void setDemiTourOk(boolean demiTourOk) {
+		this.demiTourOk = demiTourOk;
+	}
+	
+
 
        
 }
