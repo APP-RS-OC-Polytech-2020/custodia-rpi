@@ -90,6 +90,13 @@ public class SocketRaspberry implements Runnable {
 				}else if(auto == "true"){
 					robot.setManual(true);
 				}		
+			}else if(type.equals("odometry")){
+				float phi = JSON.getInt("phi");
+				robot.setPhi(phi);
+				System.out.println("phi du robot"+ robot.phi);
+			}else if(type.equals("alerte")){
+				this.robot.alerteCapteur = true;
+				this.robot.lieuAlerte = JSON.getString("qrcode");
 			}
 		}catch(org.json.JSONException e){
 			System.out.println("CoRobo\terreur decodage JSON: "+e);

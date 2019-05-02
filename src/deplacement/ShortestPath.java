@@ -103,4 +103,13 @@ public class ShortestPath {
 		}
 		return null;
 	}
+	public ArrayList<Vertex> getCorrectPath() {
+		return correctPath;
+	}
+	public void setCorrectPath(ArrayList<Vertex> correctPath) {
+		this.correctPath = correctPath;
+	}
+	
+	
+	
 }

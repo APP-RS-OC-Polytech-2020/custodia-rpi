@@ -6,6 +6,10 @@ public class Robot
     public boolean RobotIsOk = false;//une fois recalibre
     protected boolean isManual;
     public boolean demiTourOk = false;
+    public float phi;
+    public float phiBeforeRotation;
+    public boolean alerteCapteur = false;
+    public String lieuAlerte;
 
     public Robot(String hostname){
         this.hostname = hostname;
@@ -35,6 +39,24 @@ public class Robot
 	public void setDemiTourOk(boolean demiTourOk) {
 		this.demiTourOk = demiTourOk;
 	}
+
+	public float getPhi() {
+		return phi;
+	}
+
+	public void setPhi(float phi) {
+		this.phi = phi;
+	}
+
+	public float getPhiBeforeRotation() {
+		return phiBeforeRotation;
+	}
+
+	public void setPhiBeforeRotation(float phiBeforeRotation) {
+		this.phiBeforeRotation = phiBeforeRotation;
+	}
+	
+	
 	
 
 

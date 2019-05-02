@@ -36,8 +36,8 @@ public class GestionRobot implements Runnable{
 		v.add(new Vertex("SortieSalleDroite",5));
 
 		this.e=new ArrayList<Edge>();
-		e.add(new Edge(7,v.get(0),v.get(1),(float) 4.5,10));//4.5 pour 180* de rotation
-		e.add(new Edge(9,v.get(1),v.get(2),180,90));
+		//e.add(new Edge(7,v.get(0),v.get(1),(float) 180,90));
+		e.add(new Edge(9,v.get(1),v.get(2),90,90));
 		e.add(new Edge(14,v.get(2),v.get(3),180,-90));
 		e.add(new Edge(10,v.get(2),v.get(4),180,90));
 		
@@ -57,53 +57,96 @@ public class GestionRobot implements Runnable{
 		
 	}
 	
-	public void newError(Vertex vOrigin, Vertex vDestination){
+	public void newError(Vertex vOrigin, Vertex vDestination) throws JSONException, InterruptedException{
 		sp=new ShortestPath(new Map(v,e),vOrigin);
 		sp.getAllPaths();
 		sp.getPath(vDestination);
-	}
-	
-	public void modeAuto() throws InterruptedException, JSONException {
-		while(this.robot.RobotIsOk ||this.gestionCamera.findQRCode){
-			Thread.sleep(500);
-		}
-		while(this.robot.RobotIsOk==false || this.gestionCamera.findQRCode== false) {
-				//this.sr.EnvoiDriveRobot(40,0,7);
-				//Thread.sleep(25000);
-				//this.sr.EnvoiDriveRobot(0,0,0);
-				//checkAround();
-		}
+		this.regularPath = this.sp.getCorrectPath();
 		this.vPast = this.vCurrent;
 		this.vCurrent = pathCycle();
 		Edge currentEdge = getCurrentEdge(this.vPast,this.vCurrent);
-		System.out.println("currentedge"+currentEdge);
 		if(currentEdge!=null){
-			float angle;
-			if(this.vPast.equals(currentEdge.getVertA())){
-				angle = currentEdge.getActionToB();
-			}else{
-				angle = currentEdge.getActionToA();
-			}
-			this.robot.demiTourOk=true;
-			System.out.println(angle);
-			this.sr.EnvoiRotateRobot(angle);
-			Thread.sleep(12000);
-			this.sr.EnvoiDriveRobot(0,0,0);
-			this.robot.demiTourOk=false;
+			changeDirection();	
 		}	
+		this.robot.alerteCapteur = false;
+	}
+	
+	public void findVertex(String qrcode) throws JSONException, InterruptedException{
+		for(Vertex ve: this.v){
+			if(ve.getName().equals(qrcode)){
+				newError(vCurrent, ve);
+			}
+		}
+	}
+	
+	public void modeAuto() throws InterruptedException, JSONException {
+		if(this.robot.alerteCapteur == true){
+			findVertex(this.robot.lieuAlerte);
+		}
 		
+		while(this.robot.RobotIsOk==false || this.gestionCamera.findQRCode== false) {
+				this.sr.EnvoiDriveRobot(40,0,7);
+				Thread.sleep(5000);
+				this.sr.EnvoiDriveRobot(0,0,0);
+				checkAround();
+		}
+		this.vPast = this.vCurrent;
+		this.vCurrent = pathCycle();
+		System.out.println("toto");
+		Edge currentEdge = getCurrentEdge(this.vPast,this.vCurrent);
+		System.out.println("currentedge "+currentEdge);
+		if(currentEdge!=null){
+			changeDirection();	
+		}		
+		System.out.println("next");
+	}
+	
+	public void changeDirection() throws JSONException, InterruptedException{
+		Edge currentEdge = getCurrentEdge(this.vPast,this.vCurrent);
+		float angle;
+		if(this.vPast.equals(currentEdge.getVertA())){
+			angle = currentEdge.getActionToB();
+		}else{
+			angle = currentEdge.getActionToA();
+		}
+		this.robot.demiTourOk=true;
+		System.out.println(angle);
+		this.robot.phiBeforeRotation = this.robot.phi + angle;
+		System.out.println("angle courant"+ this.robot.phi);
+		System.out.println("angle a faire"+ this.robot.phiBeforeRotation);
+		if(this.robot.phiBeforeRotation>180){
+			this.robot.phiBeforeRotation=-180+(this.robot.phiBeforeRotation-180);
+		}
+		System.out.println("angle a faire"+ this.robot.phiBeforeRotation);
+		this.sr.EnvoiRotateRobot((float) -1);
+		Thread.sleep(6000);
+		while(this.robot.phi < this.robot.phiBeforeRotation+5 && this.robot.phi > this.robot.phiBeforeRotation-5){
+			Thread.sleep(500);
+		}
+		this.sr.EnvoiDriveRobot(0,0,0);
+		this.robot.demiTourOk=false;
+		this.robot.RobotIsOk = false;
 	}
 	
 	public void checkAround() throws JSONException, InterruptedException{
+		this.robot.phiBeforeRotation= this.robot.phi+10;
+		if(this.robot.phiBeforeRotation>180){
+			this.robot.phiBeforeRotation=-180+(this.robot.phiBeforeRotation-180);
+		}
+		System.out.println("angle courant"+ this.robot.phi);
+		System.out.println("angle a faire"+ this.robot.phiBeforeRotation);
 		if(!this.robot.RobotIsOk ||!this.gestionCamera.findQRCode){
-			int i = 0;
-			while(i!=12 && this.gestionCamera.findQRCode == false){
-				this.sr.EnvoiRotateRobot((float) 4.5);
-				Thread.sleep(1000);
-				this.sr.EnvoiRotateRobot(0);
-				Thread.sleep(2000);
-				i=i+1;	
-			}
+			this.sr.EnvoiRotateRobot((float) 1);
+			Thread.sleep(5000);
+			
+			System.out.println("angle courant"+ this.robot.phi);
+			//probleme test suivant car valeur negative
+				while(this.gestionCamera.findQRCode == false && ((this.robot.phi-5) > this.robot.phiBeforeRotation || (this.robot.phi+5) < this.robot.phiBeforeRotation)){
+					Thread.sleep(100);
+					//System.out.println("angle courant du robot "+ this.robot.phi);
+				}
+
+			
 			this.sr.EnvoiRotateRobot(0);
 		}
 	}

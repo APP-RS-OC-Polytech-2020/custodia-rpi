@@ -92,7 +92,7 @@ public class GestionCamera implements Runnable{
 					//Phase test voir ce que donne points
 					//float scaleFactor=2;
 					ResultPoint[] points = qrCodeResult.getResultPoints();
-					System.out.println("Info Image totale:  Longueur : "+ bufImg.getWidth() + " Hauteur : " + bufImg.getHeight());
+					//System.out.println("Info Image totale:  Longueur : "+ bufImg.getWidth() + " Hauteur : " + bufImg.getHeight());
 
 					/*if(points.length>3){
 						Point topleft = new Point(points[0].getX(), points[0].getY());
@@ -107,8 +107,8 @@ public class GestionCamera implements Runnable{
 					this.findQRCode=true;
 					recalibrage(points[0].getX(),distanceRob);
 					
-					System.out.println("Le robot est à  " + distanceRob + " cm du QRCode");
-					System.out.println(qrCodeResult.getText());
+					//System.out.println("Le robot est à  " + distanceRob + " cm du QRCode");
+					//System.out.println(qrCodeResult.getText());
 					this.zone = qrCodeResult.getText();
 					Thread.sleep(100);
 					
@@ -145,14 +145,15 @@ public class GestionCamera implements Runnable{
 	
     //QRCode
     public void recalibrage(float valueX, float distance) throws InterruptedException, JSONException{
-    	if(!this.robot.demiTourOk){
+    	if(!this.robot.demiTourOk && !this.robot.RobotIsOk){
+    		System.out.println("valeur pos X"+ valueX);
 			if(valueX < 180){
 				this.sr.EnvoiDriveRobot(0,10,5);
 			}else if(valueX > 370){
 				this.sr.EnvoiDriveRobot(0,-10,5);
-			}else if(distance>30){
+			}else if(distance>80){
 				this.sr.EnvoiDriveRobot(10,0,5);
-			}else if(distance <30){
+			}else {
 				this.sr.EnvoiDriveRobot(0,0,0);
 				this.robot.RobotIsOk = true;
 				System.out.println("recalibrage ok ");

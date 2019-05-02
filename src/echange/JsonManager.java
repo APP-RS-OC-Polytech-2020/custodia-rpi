@@ -13,7 +13,6 @@ public class JsonManager {
 		obj.put("manualMode",false);
 		obj.put("type","command");
 		obj.put("mode","rotation");
-		obj.put("info","rzerze");
 		
 		JSONObject rotate = new JSONObject();
 		rotate.put("rotate", rotation);
