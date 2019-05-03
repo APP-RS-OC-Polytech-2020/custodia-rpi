@@ -49,7 +49,7 @@ public class SocketRaspberry implements Runnable {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			System.out.println("client\tgetIntputStreamServer: "+inLine);
+			//System.out.println("client\tgetIntputStreamServer: "+inLine);
 		}
 	}
 	
@@ -72,7 +72,7 @@ public class SocketRaspberry implements Runnable {
 		try{
 			JSONObject JSON = new JSONObject(j);
 			String type = JSON.getString("type");
-			System.out.println("CoRobo\ttype:"+type);
+			//System.out.println("CoRobo\ttype:"+type);
 			
 			if(type.equals("init")){
 				String info = JSON.getString("infoInit");
@@ -93,7 +93,7 @@ public class SocketRaspberry implements Runnable {
 			}else if(type.equals("odometry")){
 				float phi = JSON.getInt("phi");
 				robot.setPhi(phi);
-				System.out.println("phi du robot"+ robot.phi);
+				//System.out.println("phi du robot"+ robot.phi);
 			}else if(type.equals("alerte")){
 				this.robot.alerteCapteur = true;
 				this.robot.lieuAlerte = JSON.getString("qrcode");
