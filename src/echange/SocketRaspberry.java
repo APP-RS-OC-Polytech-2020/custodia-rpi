@@ -9,7 +9,6 @@ import java.net.Socket;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 public class SocketRaspberry implements Runnable {
 
 	PrintWriter out;
@@ -32,7 +31,6 @@ public class SocketRaspberry implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 		out.println("{\"type\":\"init\",\"infoInit\":\"Client-->Server  demande de connexion\", \"clientName\": \""+""+"\", \"clientType\":\"ArduinoRobotino\",\"ipRobot\":\""+this.robot.hostname+"\"}");//ajouter le nom du robot
 		out.println("{\"type\":\"message\",\"message\":\"testRobotino\"}");
 		
@@ -55,29 +53,22 @@ public class SocketRaspberry implements Runnable {
 	
 	public void EnvoiDriveRobot(float x, float y,float force) throws JSONException{
 		JSONObject jsonObj = jsonManager.driveRobot(x,y,force,this.robot.hostname);
-		System.out.println(jsonObj);
 		envoyerMessage(jsonObj);
-		//A completer avec la transfo en json et l'envoi
 	}
 	
 	public void EnvoiRotateRobot(float rotation) throws JSONException{
 		JSONObject jsonObj = jsonManager.rotateRobot(rotation, this.robot.hostname);
-		System.out.println(jsonObj);
-		envoyerMessage(jsonObj);
-		//A completer avec la transfo en json et l'envoi
-		
+		envoyerMessage(jsonObj);	
 	}
 	
 	public void decodeurJson(String j) {
 		try{
 			JSONObject JSON = new JSONObject(j);
 			String type = JSON.getString("type");
-			//System.out.println("CoRobo\ttype:"+type);
-			
+			//System.out.println("CoRobo\ttype:"+type);	
 			if(type.equals("init")){
 				String info = JSON.getString("infoInit");
-				System.out.println("CoRobo\tinfo: "+info);
-				
+				System.out.println("CoRobo\tinfo: "+info);	
 			}else if(type.equals("message")){
 				String message = JSON.getString("message");
 				System.out.println("CoRobo\tMessage: "+message);
@@ -93,7 +84,6 @@ public class SocketRaspberry implements Runnable {
 			}else if(type.equals("odometry")){
 				float phi = JSON.getInt("phi");
 				robot.setPhi(phi);
-				//System.out.println("phi du robot"+ robot.phi);
 			}else if(type.equals("alerte")){
 				this.robot.alerteCapteur = true;
 				this.robot.lieuAlerte = JSON.getString("qrcode");

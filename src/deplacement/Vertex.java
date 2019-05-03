@@ -23,5 +23,4 @@ public class Vertex {
 	public String toString() {
 		return "Vertex [name=" + name + ", id=" + id + "]";
 	}
-	
 }

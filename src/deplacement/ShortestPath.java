@@ -29,11 +29,13 @@ public class ShortestPath {
 			this.distance.add(maxValueDistance);
 		}
 	}
+	
 	public void getAllPaths() {
 		getShortestPathToAllVertices();
 		System.out.println(predecessor);
 		System.out.println(distance);
 	}
+	
 	public void getPath(Vertex vDestination) {
 		getShortestPathToAllVertices();
 		this.correctPath.add(vDestination);
@@ -41,8 +43,8 @@ public class ShortestPath {
 			this.correctPath.add(0,this.predecessor.get(this.map.vertices.indexOf(vDestination)));
 			vDestination=this.predecessor.get(this.map.vertices.indexOf(vDestination));
 		}
-		System.out.println(correctPath);
 	}
+	
 	public void getShortestPathToAllVertices(){
 		int numTotalVertices=this.map.vertices.size();
 		for(int i=0;i<this.map.vertices.size();i++) {
@@ -50,7 +52,6 @@ public class ShortestPath {
 		}
 		this.adjacentVertex.add(this.vOrigin);
 		this.distance.set(this.map.vertices.indexOf(this.vOrigin), 0);
-		//while(this.uncheckedVertex.size()!=0) {
 			for(int i=0;i<numTotalVertices;i++) {
 				this.vCurrent=this.adjacentVertex.get(i);
 				getNeighbor(this.vCurrent);
@@ -62,9 +63,9 @@ public class ShortestPath {
 				}
 				this.uncheckedVertex.remove(this.vCurrent);
 			}
-		//}
 		this.adjacentVertex.clear();
 	}
+	
 	public void getNeighbor(Vertex v) {
 		neighbor.clear();
 		for(Edge e:map.edges) {
@@ -76,6 +77,7 @@ public class ShortestPath {
 			}
 		}	
 	}
+	
 	public void addToAdjacentList() {
 		for(Vertex v:this.neighbor) {
 			if(this.uncheckedVertex.contains(v) && !this.adjacentVertex.contains(v)) {
@@ -83,6 +85,7 @@ public class ShortestPath {
 			}
 		}
 	}
+	
 	public void setPredecessorAndDistance(Vertex vStart, Vertex vDestination, int weight) {
 		int currentDistance;
 		if(distance.get(this.map.vertices.indexOf(vStart)).equals(maxValueDistance)) {
@@ -95,6 +98,7 @@ public class ShortestPath {
 			this.distance.set(this.map.vertices.indexOf(vDestination),currentDistance);
 		}	
 	}
+	
 	private Edge getCurrentEdge(Vertex va,Vertex vb) {
 		for(Edge e:this.map.edges) {
 			if((va.equals(e.getVertA())&&vb.equals(e.getVertB()))||(vb.equals(e.getVertA())&&va.equals(e.getVertB()))) {
@@ -103,13 +107,12 @@ public class ShortestPath {
 		}
 		return null;
 	}
+	
 	public ArrayList<Vertex> getCorrectPath() {
 		return correctPath;
 	}
+	
 	public void setCorrectPath(ArrayList<Vertex> correctPath) {
 		this.correctPath = correctPath;
-	}
-	
-	
-	
+	}		
 }

@@ -36,7 +36,7 @@ public class GestionRobot implements Runnable{
 		v.add(new Vertex("SortieSalleDroite",5));
 
 		this.e=new ArrayList<Edge>();
-		//e.add(new Edge(7,v.get(0),v.get(1),180,-90));
+		e.add(new Edge(7,v.get(0),v.get(1),180,-90));
 		e.add(new Edge(9,v.get(1),v.get(2),90,-90));
 		e.add(new Edge(14,v.get(2),v.get(3),-90,90));
 		e.add(new Edge(10,v.get(2),v.get(4),90,-90));
@@ -53,8 +53,7 @@ public class GestionRobot implements Runnable{
 		regularPath.add(v.get(2));
 		regularPath.add(v.get(1));
 		
-		this.robot = r;
-		
+		this.robot = r;	
 	}
 	
 	public void newError(Vertex vOrigin, Vertex vDestination) throws JSONException, InterruptedException{
@@ -88,18 +87,15 @@ public class GestionRobot implements Runnable{
 				this.sr.EnvoiDriveRobot(40,0,7);
 				Thread.sleep(8000);
 				this.sr.EnvoiDriveRobot(0,0,0);
-				Thread.sleep(2000);
+				Thread.sleep(1000);
 				checkAround();
 		}
 		this.vPast = this.vCurrent;
 		this.vCurrent = pathCycle();
-		System.out.println("toto");
 		Edge currentEdge = getCurrentEdge(this.vPast,this.vCurrent);
-		System.out.println("currentedge "+currentEdge);
 		if(currentEdge!=null){
 			changeDirection();	
 		}		
-		System.out.println("next");
 	}
 	
 	public void changeDirection() throws JSONException, InterruptedException{
@@ -111,16 +107,12 @@ public class GestionRobot implements Runnable{
 			angle = currentEdge.getActionToA();
 		}
 		this.robot.demiTourOk=true;
-		System.out.println(angle);
-		this.robot.phiBeforeRotation = this.robot.phi + angle;
-		System.out.println("angle courant"+ this.robot.phi);
-		System.out.println("angle a faire"+ this.robot.phiBeforeRotation);
+		this.robot.phiBeforeRotation = this.robot.phi + angle+15;
 		if(this.robot.phiBeforeRotation>180){
 			this.robot.phiBeforeRotation=-180+(this.robot.phiBeforeRotation-180);
 		}
-		System.out.println("angle a faire"+ this.robot.phiBeforeRotation);
 		this.sr.EnvoiRotateRobot((float) -1);
-		Thread.sleep(5000);
+		Thread.sleep(6000);
 		while(this.robot.phi < this.robot.phiBeforeRotation+5 && this.robot.phi > this.robot.phiBeforeRotation-5){
 			Thread.sleep(500);
 		}
@@ -135,24 +127,13 @@ public class GestionRobot implements Runnable{
 		if(this.robot.phiBeforeRotation>180){
 			this.robot.phiBeforeRotation=-180+(this.robot.phiBeforeRotation-180);
 		}
-		System.out.println("angle courant"+ this.robot.phi);
-		System.out.println("angle a faire"+ this.robot.phiBeforeRotation);
 		if(!this.robot.RobotIsOk ||!this.gestionCamera.findQRCode){
 			this.sr.EnvoiRotateRobot((float) 1);
 			Thread.sleep(1000);
-			
-			//System.out.println("angle courant"+ this.robot.phi);
-			//probleme test suivant car valeur negative
-			while(this.gestionCamera.findQRCode == false && (this.robot.phi < this.robot.phiBeforeRotation+5 || this.robot.phi > this.robot.phiBeforeRotation-5)){
+			while(!this.gestionCamera.findQRCode&& (this.robot.phi < this.robot.phiBeforeRotation+5 && this.robot.phi > this.robot.phiBeforeRotation-5)){
 				Thread.sleep(100);
-				//System.out.println("angle courant du robot "+ this.robot.phi);
 			}
 			this.sr.EnvoiRotateRobot(0);
-			System.out.println("find QrCode: " +this.gestionCamera.findQRCode);
-			System.out.println("succes quand: phi robot "+ this.robot.phi);
-			System.out.println("angle a faire: "+ this.robot.phiBeforeRotation);
-			
-			
 		}
 	}
 	
@@ -166,7 +147,7 @@ public class GestionRobot implements Runnable{
 					return edges;
 				}
 		}
-		return null;//degeulasse
+		return null;
 	}
 	
     public Vertex pathCycle(){		

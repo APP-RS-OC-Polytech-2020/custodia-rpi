@@ -54,11 +54,5 @@ public class Robot
 
 	public void setPhiBeforeRotation(float phiBeforeRotation) {
 		this.phiBeforeRotation = phiBeforeRotation;
-	}
-	
-	
-	
-
-
-       
+	}    
 }
