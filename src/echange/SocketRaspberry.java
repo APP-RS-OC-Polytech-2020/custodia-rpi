@@ -84,13 +84,15 @@ public class SocketRaspberry implements Runnable {
 			}else if(type.equals("odometry")){
 				float phi = JSON.getInt("phi");
 				robot.setPhi(phi);
-			}else if(type.equals("alerte")){
+				
+			}else if(type.equals("alert")){
 				this.robot.alerteCapteur = true;
 				this.robot.lieuAlerte = JSON.getString("qrcode");
+				System.out.println(this.robot.lieuAlerte);
 			}
 		}catch(org.json.JSONException e){
-			System.out.println("CoRobo\terreur decodage JSON: "+e);
-			System.out.println("CoRobo\tJSON: "+j);
+			//System.out.println("CoRobo\terreur decodage JSON: "+e);
+			//System.out.println("CoRobo\tJSON: "+j);
 		}
 	}
 }

@@ -101,7 +101,7 @@ public class GestionCamera implements Runnable{
 	
 	public void start(){
 		System.out.println("Initialisation camera");
-	}
+	}						
 	
     //QRCode
     public void recalibrage(float valueX, float distance) throws InterruptedException, JSONException{
@@ -115,6 +115,7 @@ public class GestionCamera implements Runnable{
 			}else {
 				this.sr.EnvoiDriveRobot(0,0,0);
 				this.robot.RobotIsOk = true;
+				System.out.println("ok");
 			}
     	}
 	}

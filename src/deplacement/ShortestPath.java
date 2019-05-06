@@ -1,6 +1,5 @@
 package deplacement;
 
-
 import java.util.ArrayList;
 
 
@@ -28,6 +27,7 @@ public class ShortestPath {
 			this.predecessor.add(null);
 			this.distance.add(maxValueDistance);
 		}
+		
 	}
 	
 	public void getAllPaths() {
@@ -38,10 +38,12 @@ public class ShortestPath {
 	
 	public void getPath(Vertex vDestination) {
 		getShortestPathToAllVertices();
-		this.correctPath.add(vDestination);
-		while(vDestination!=this.vOrigin) {
-			this.correctPath.add(0,this.predecessor.get(this.map.vertices.indexOf(vDestination)));
-			vDestination=this.predecessor.get(this.map.vertices.indexOf(vDestination));
+		Vertex vFind = findIndexElement(vDestination);
+		this.correctPath.add(vFind);
+		while(vFind!=this.vOrigin) {
+			//Y'a un bug ici
+			this.correctPath.add(0,this.predecessor.get(this.map.vertices.indexOf(vFind)));
+			vFind=this.predecessor.get(this.map.vertices.indexOf(vFind));
 		}
 	}
 	
@@ -51,28 +53,38 @@ public class ShortestPath {
 			this.uncheckedVertex.add(this.map.vertices.get(i));
 		}
 		this.adjacentVertex.add(this.vOrigin);
-		this.distance.set(this.map.vertices.indexOf(this.vOrigin), 0);
-			for(int i=0;i<numTotalVertices;i++) {
-				this.vCurrent=this.adjacentVertex.get(i);
-				getNeighbor(this.vCurrent);
-				addToAdjacentList();
-				for(Vertex v:this.neighbor) {
-					if(this.uncheckedVertex.contains(v)) {
-						setPredecessorAndDistance(this.vCurrent,v,getCurrentEdge(this.vCurrent,v).getDistance());
-					}
+		Vertex vFind = findIndexElement(this.vOrigin);
+		this.distance.set(this.map.vertices.indexOf(vFind), 0);
+		for(int i=0;i<numTotalVertices;i++) {
+			this.vCurrent=this.adjacentVertex.get(i);
+			getNeighbor(this.vCurrent);
+			addToAdjacentList();
+			for(Vertex v:this.neighbor) {
+				if(this.uncheckedVertex.contains(v)) {
+					setPredecessorAndDistance(this.vCurrent,v,getCurrentEdge(this.vCurrent,v).getDistance());
 				}
-				this.uncheckedVertex.remove(this.vCurrent);
 			}
+			this.uncheckedVertex.remove(this.vCurrent);
+		}
 		this.adjacentVertex.clear();
+	}
+	
+	public Vertex findIndexElement(Vertex v) {
+		for(int i=0;i<this.map.vertices.size();i++) {
+			if(v.getName()== this.map.vertices.get(i).getName()) {
+				return this.map.vertices.get(i);
+			}
+		}
+		return v;
 	}
 	
 	public void getNeighbor(Vertex v) {
 		neighbor.clear();
 		for(Edge e:map.edges) {
-			if(e.getVertA().equals(v)) {
+			if(e.getVertA().getId()==(v.getId())) {
 				neighbor.add(e.getVertB());
 			}
-			else if(e.getVertB().equals(v)) {
+			else if(e.getVertB().getId()==(v.getId())) {
 				neighbor.add(e.getVertA());
 			}
 		}	
@@ -83,25 +95,28 @@ public class ShortestPath {
 			if(this.uncheckedVertex.contains(v) && !this.adjacentVertex.contains(v)) {
 				this.adjacentVertex.add(v);
 			}
+			
 		}
 	}
 	
 	public void setPredecessorAndDistance(Vertex vStart, Vertex vDestination, int weight) {
 		int currentDistance;
-		if(distance.get(this.map.vertices.indexOf(vStart)).equals(maxValueDistance)) {
+		Vertex vFindStart = findIndexElement(vStart);
+		if(distance.get(this.map.vertices.indexOf(vFindStart)).equals(maxValueDistance)) {
 			currentDistance=weight;
 		}else {
-			currentDistance=distance.get(this.map.vertices.indexOf(vStart))+weight;
-		}		
-		if(distance.get(this.map.vertices.indexOf(vDestination))>currentDistance) {
-			this.predecessor.set(this.map.vertices.indexOf(vDestination), vStart);
-			this.distance.set(this.map.vertices.indexOf(vDestination),currentDistance);
-		}	
+			currentDistance=distance.get(this.map.vertices.indexOf(vFindStart))+weight;
+		}
+		Vertex vFindDestination = findIndexElement(vDestination);
+		if(distance.get(this.map.vertices.indexOf(vFindDestination))>currentDistance) {
+			this.predecessor.set(this.map.vertices.indexOf(vFindDestination), vStart);
+			this.distance.set(this.map.vertices.indexOf(vFindDestination),currentDistance);
+		}
 	}
 	
 	private Edge getCurrentEdge(Vertex va,Vertex vb) {
 		for(Edge e:this.map.edges) {
-			if((va.equals(e.getVertA())&&vb.equals(e.getVertB()))||(vb.equals(e.getVertA())&&va.equals(e.getVertB()))) {
+			if((va.getId()==e.getVertA().getId()&&vb.getId()==e.getVertB().getId())||(vb.getId()==e.getVertA().getId())&&va.getId()==e.getVertB().getId()) {
 				return(e);
 			}
 		}
