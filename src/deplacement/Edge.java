@@ -44,12 +44,16 @@ public class Edge {
 	public void setActionToB(int actionToB) {
 		this.actionToB = actionToB;
 	}
-  // determines the neighbouring node of a supplied node, based on the two nodes connected by this edge
-  public int getNeighbourIndex(int nodeIndex) {
-    if (this.vertA.getId() == nodeIndex) {
-      return this.vertB.getId();
-    } else {
-      return this.vertA.getId();
-   }
-  }
+	/**
+	 * Determines the neighboring node of a supplied node, based on the two nodes connected by this edge
+	 * @param nodeIndex
+	 * @return
+	 */
+	public int getNeighbourIndex(int nodeIndex) {
+		if (this.vertA.getId() == nodeIndex) {
+			return this.vertB.getId();
+		} else {
+			return this.vertA.getId();
+		}
+	}
 }

@@ -30,23 +30,31 @@ public class ShortestPath {
 		
 	}
 	
+	/**
+	 * Get path from current vertex to all possible vertices
+	 */
 	public void getAllPaths() {
 		getShortestPathToAllVertices();
 		System.out.println(predecessor);
 		System.out.println(distance);
 	}
-	
+	/**
+	 * Get path from current vertex to destination vertex
+	 * @param vDestination
+	 */
 	public void getPath(Vertex vDestination) {
 		getShortestPathToAllVertices();
 		Vertex vFind = findIndexElement(vDestination);
 		this.correctPath.add(vFind);
 		while(vFind!=this.vOrigin) {
-			//Y'a un bug ici
 			this.correctPath.add(0,this.predecessor.get(this.map.vertices.indexOf(vFind)));
 			vFind=this.predecessor.get(this.map.vertices.indexOf(vFind));
 		}
 	}
 	
+	/**
+	 * Get the shortest paths
+	 */
 	public void getShortestPathToAllVertices(){
 		int numTotalVertices=this.map.vertices.size();
 		for(int i=0;i<this.map.vertices.size();i++) {
@@ -68,7 +76,11 @@ public class ShortestPath {
 		}
 		this.adjacentVertex.clear();
 	}
-	
+	/**
+	 * Find index of element
+	 * @param v
+	 * @return vertex
+	 */
 	public Vertex findIndexElement(Vertex v) {
 		for(int i=0;i<this.map.vertices.size();i++) {
 			if(v.getName()== this.map.vertices.get(i).getName()) {
@@ -77,7 +89,10 @@ public class ShortestPath {
 		}
 		return v;
 	}
-	
+	/**
+	 * Get all neighbor vertices
+	 * @param v
+	 */
 	public void getNeighbor(Vertex v) {
 		neighbor.clear();
 		for(Edge e:map.edges) {
@@ -89,7 +104,9 @@ public class ShortestPath {
 			}
 		}	
 	}
-	
+	/**
+	 * Add all unchecked neighbors to list
+	 */
 	public void addToAdjacentList() {
 		for(Vertex v:this.neighbor) {
 			if(this.uncheckedVertex.contains(v) && !this.adjacentVertex.contains(v)) {
@@ -98,7 +115,12 @@ public class ShortestPath {
 			
 		}
 	}
-	
+	/**
+	 * Set predecessor and distance
+	 * @param vStart
+	 * @param vDestination
+	 * @param weight
+	 */
 	public void setPredecessorAndDistance(Vertex vStart, Vertex vDestination, int weight) {
 		int currentDistance;
 		Vertex vFindStart = findIndexElement(vStart);
@@ -113,7 +135,12 @@ public class ShortestPath {
 			this.distance.set(this.map.vertices.indexOf(vFindDestination),currentDistance);
 		}
 	}
-	
+	/**
+	 * Get edge
+	 * @param va
+	 * @param vb
+	 * @return edge
+	 */
 	private Edge getCurrentEdge(Vertex va,Vertex vb) {
 		for(Edge e:this.map.edges) {
 			if((va.getId()==e.getVertA().getId()&&vb.getId()==e.getVertB().getId())||(vb.getId()==e.getVertA().getId())&&va.getId()==e.getVertB().getId()) {
@@ -122,7 +149,10 @@ public class ShortestPath {
 		}
 		return null;
 	}
-	
+	/**
+	 * Returns the correct path
+	 * @return correctPath
+	 */
 	public ArrayList<Vertex> getCorrectPath() {
 		return correctPath;
 	}

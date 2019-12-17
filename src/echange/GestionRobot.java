@@ -22,7 +22,11 @@ public class GestionRobot implements Runnable{
 	private SocketRaspberry sr;
 	private int currentPathId;
 	private Map mapDep;
-	
+	/**
+	 * Set all environment variables
+	 * @param r
+	 * @param sr
+	 */
 	public GestionRobot(Robot r, SocketRaspberry sr){
 		this.vCurrent = new Vertex("SalleAPP1",1);
 		this.sr = sr;
@@ -56,7 +60,13 @@ public class GestionRobot implements Runnable{
 		
 		this.robot = r;	
 	}
-	
+	/**
+	 * Action to complete when robot arrived to qrcode
+	 * @param vOrigin
+	 * @param vDestination
+	 * @throws InterruptedException
+	 * @throws JSONException
+	 */
 	public void newError(Vertex vOrigin, Vertex vDestination) throws  InterruptedException, JSONException{	
 		
 		sp=new ShortestPath(new Map(v,e),vOrigin);
@@ -74,7 +84,12 @@ public class GestionRobot implements Runnable{
 		}	
 		this.robot.alerteCapteur = false;
 	}
-	
+	/**
+	 * Find vertex
+	 * @param qrcode
+	 * @throws JSONException
+	 * @throws InterruptedException
+	 */
 	public void findVertex(String qrcode) throws JSONException, InterruptedException{
 		for(Vertex ve: this.v){
 			if(ve.getName().equals(qrcode)){
@@ -82,7 +97,11 @@ public class GestionRobot implements Runnable{
 			}
 		}
 	}
-	
+	/**
+	 * Automatic surveillance mode
+	 * @throws InterruptedException
+	 * @throws JSONException
+	 */
 	public void modeAuto() throws InterruptedException, JSONException {
 		
 		while(this.robot.RobotIsOk==false || this.gestionCamera.findQRCode== false) {
@@ -106,7 +125,11 @@ public class GestionRobot implements Runnable{
 		}
 	}
 	
-	
+	/**
+	 * Change direction of robot
+	 * @throws JSONException
+	 * @throws InterruptedException
+	 */
 	public void changeDirection() throws JSONException, InterruptedException{
 		Edge currentEdge = getCurrentEdge(this.vPast,this.vCurrent);
 		float angle;
@@ -134,7 +157,11 @@ public class GestionRobot implements Runnable{
 		this.robot.demiTourOk=false;
 		this.robot.RobotIsOk = false;
 	}
-	
+	/**
+	 * Robot checks around itself
+	 * @throws JSONException
+	 * @throws InterruptedException
+	 */
 	public void checkAround() throws JSONException, InterruptedException{
 		this.robot.phiBeforeRotation= this.robot.phi+5;
 		if(this.robot.phiBeforeRotation>180){
@@ -150,7 +177,12 @@ public class GestionRobot implements Runnable{
 		}
 	}
 	
-	
+	/**
+	 * Get current edge
+	 * @param vPast
+	 * @param vCurrent
+	 * @return edge
+	 */
 	public Edge getCurrentEdge(Vertex vPast,Vertex vCurrent){
 		for(Edge edges: this.e){
 				if(edges.getVertA().equals(vPast)||edges.getVertB().equals(vPast)){
@@ -162,7 +194,10 @@ public class GestionRobot implements Runnable{
 		}
 		return null;
 	}
-	
+	/**
+	 * Path cycle
+	 * @return path
+	 */
     public Vertex pathCycle(){		
 		if(this.currentPathId==(regularPath.size()-1)){ 
 			this.currentPathId=0;

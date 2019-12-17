@@ -8,7 +8,13 @@ public class JsonManager {
 	public JsonManager(JSONObject o){
 		this.obj=o;
 	}
-
+	/**
+	 * Provides rotation information for the robot
+	 * @param rotation
+	 * @param hostname
+	 * @return
+	 * @throws JSONException
+	 */
 	public JSONObject rotateRobot(float rotation, String hostname) throws JSONException{
 		obj.put("manualMode",false);
 		obj.put("type","command");
@@ -24,7 +30,15 @@ public class JsonManager {
 		obj.put("robot", host);
 		return obj;
 	}
-	
+	/**
+	 * Provides drive information for the robot
+	 * @param x
+	 * @param y
+	 * @param force
+	 * @param hostname
+	 * @return
+	 * @throws JSONException
+	 */
 	public JSONObject driveRobot(float x, float y,float force, String hostname)throws JSONException{
 		obj.put("manualMode",false);
 		obj.put("type","command");
